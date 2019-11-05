@@ -48,11 +48,17 @@ const msgTpl = `
 	{{ end }}{{ end }}
 	{{ end }}{{ end }}
 
-	{{ if has .Rules "Pattern"}}{{ if .Rules.Pattern }}
-	{{/* TODO(akonradi) implement pattern matching
-		var {{ lookup .Field "Pattern" }} = regexp.MustCompile({{ lit .Rules.GetPattern }})
-	*/}}
+        {{ if has .Rules "Pattern"}}{{ if .Rules.Pattern }}
+               const re2::RE2 {{ lookup .Field "Pattern" }}(std::string({{ lit .Rules.GetPattern }},
+                                              sizeof({{ lit .Rules.GetPattern }}) - 1), re2::RE2::Quiet);
 	{{ end }}{{ end }}
+
+	{{ if has .Rules "Items"}}{{ if .Rules.Items }}
+        {{ if has .Rules.Items.GetString_ "Pattern" }} {{ if .Rules.Items.GetString_.Pattern }}
+               const re2::RE2 {{ lookup .Field "Pattern" }}(std::string({{ lit .Rules.Items.GetString_.GetPattern }},
+                                              sizeof({{ lit .Rules.Items.GetString_.GetPattern }}) - 1), re2::RE2::Quiet);
+	{{ end }}{{ end }}
+        {{ end }}{{ end }}
 
 {{ end }}{{ end }}
 
